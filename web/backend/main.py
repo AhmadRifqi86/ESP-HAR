@@ -90,6 +90,7 @@ client = MongoClient(MONGODB_URL)
 db = client["HealthData"]
 users_collection = db["Users"]
 doctors_collection = db["Doctors"]
+hospital_collection = db["Hospitals"]
 
 @app.on_event("startup")
 async def startup_event():
