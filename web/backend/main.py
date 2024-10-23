@@ -71,11 +71,16 @@ sys.path.append("..")
 
 from heart_attack_prediction.preprocess.preprocess_data import preprocess
 
+origins = [
+    "http://0.0.0.0:3000",
+    "http://34.123.156.74:3000",
+]
+
 app = FastAPI()
 # Allow all origins and set CORS headers.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['*'],
+    allow_origins=origins,
     allow_credentials=True, 
     allow_methods=["*"],
     allow_headers=["*"],
