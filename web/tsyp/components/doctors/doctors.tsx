@@ -40,7 +40,7 @@ export default function Doctors() {
     const [myDoctors, SetMyDoctors] = useState<string[]>([]);
     useEffect(() => {
         const fetchdata = async () => {
-            const response = await fetch('http://127.0.0.1:8000/get_doctors', {
+            const response = await fetch('http://0.0.0.0:8000/get_doctors', {
                 method: 'Get',
                 headers: {
                     'Content-Type': 'application/json', // Adjust the content type if needed,
@@ -66,7 +66,7 @@ export default function Doctors() {
 
     useEffect(() => {
         const fetchdata = async () => {
-            const response = await fetch('http://127.0.0.1:8000/user/info', {
+            const response = await fetch('http://0.0.0.0:8000/user/info', {
                 headers: {
                     'Content-Type': 'application/json', // Adjust the content type if needed,
                     'Authorization': `Bearer ${token}`

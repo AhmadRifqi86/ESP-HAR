@@ -58,7 +58,7 @@ export default function Dashboard() {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     useEffect(() => {
         const fetchdata = async () => {
-            const response = await fetch('http://127.0.0.1:8000/user/info', {
+            const response = await fetch('http://0.0.0.0:8000/user/info', {
                 headers: {
                     'Content-Type': 'application/json', // Adjust the content type if needed,
                     'Authorization': `Bearer ${token}`
@@ -75,14 +75,14 @@ export default function Dashboard() {
     }, [token, mesure]);
     async function GetMeasure() {
         setIsLoading(true)
-        const response = await fetch('http://127.0.0.1:8000/getM', {
+        const response = await fetch('http://0.0.0.0:8000/getM', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json', // Adjust the content type if needed,
                 'Authorization': `Bearer ${token}`
             }
         });
-        const response2 = await fetch('http://127.0.0.1:8000/user/health-status', {
+        const response2 = await fetch('http://0.0.0.0:8000/user/health-status', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json', // Adjust the content type if needed,
