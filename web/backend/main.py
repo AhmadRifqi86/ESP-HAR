@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from entity.User import User,HealthData
@@ -71,16 +71,12 @@ sys.path.append("..")
 
 from heart_attack_prediction.preprocess.preprocess_data import preprocess
 
-origins = [
-    "http://0.0.0.0:3000",
-    "http://34.123.156.74:3000",
-]
 
 app = FastAPI()
 # Allow all origins and set CORS headers.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True, 
     allow_methods=["*"],
     allow_headers=["*"],
