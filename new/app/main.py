@@ -21,12 +21,21 @@ templates = Jinja2Templates(directory="app/templates")
 # Load API key from .env file or environment variable
 load_dotenv()  # Memuat variabel lingkungan dari file .env
 openai.api_key = os.getenv("OPENAI_API_KEY")
+env = os.getenv("ENV")
 
-# MongoDB Connection
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")  # Default jika tidak ada variabel lingkungan
-client = AsyncIOMotorClient(MONGO_URI)
-db = client["iot_app"]  # Database name
-users_collection = db["users"]  # Collection for users
+if env == "production":
+    prod = True
+elif env == "staging":
+    prod = False
+
+if prod:
+    # MongoDB Connection
+    MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")  # Default jika tidak ada variabel lingkungan
+    client = AsyncIOMotorClient(MONGO_URI)
+    db = client["iot_app"]  # Database name
+    users_collection = db["users"]  # Collection for users
+else:
+    users = {}
 
 # Sesi user aktif
 current_user = {"name": None}
@@ -39,7 +48,6 @@ class Message(BaseModel):
 messages = [
     {"role": "system", "content": "You are a helpful assistant."},
 ]
-
 
 @app.get("/", response_class=HTMLResponse)
 async def login_register_page(request: Request):
@@ -77,8 +85,6 @@ async def login_user(request: Request, username: str = Form(...), password: str 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request):
     """Halaman dashboard."""
-    if not current_user["name"]:
-        return RedirectResponse(url="/", status_code=303)
 
     # Data IoT dummy
     iot_data = {
@@ -87,7 +93,13 @@ async def dashboard(request: Request):
         "oxygen_level": 98,
         "bmi": 22.5,
     }
-    return templates.TemplateResponse("dashboard.html", {"request": request, "user": current_user["name"], "data": iot_data})
+
+    if prod:
+        if not current_user["name"]:
+            return RedirectResponse(url="/", status_code=303)
+        return templates.TemplateResponse("dashboard.html", {"request": request, "user": current_user["name"], "data": iot_data})
+    else:
+        return templates.TemplateResponse("dashboard.html", {"request": request, "user": "dev", "data": iot_data})
 
 @app.post("/chat")
 async def chat_with_openai(message: Message):
