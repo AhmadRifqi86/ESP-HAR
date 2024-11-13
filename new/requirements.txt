@@ -5,3 +5,6 @@ jinja2
 python-multipart
 openai==0.28
 python-dotenv
+paho-mqtt
+bcrypt
+thread

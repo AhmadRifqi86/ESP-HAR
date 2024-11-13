@@ -8,6 +8,10 @@ import openai
 import os
 import logging
 from dotenv import load_dotenv
+import paho.mqtt.client as mqtt
+# from entity.user import User, HealthData, SensorData
+import threading
+import bcrypt
 
 logging.basicConfig(level=logging.INFO)
 
@@ -49,6 +53,31 @@ messages = [
     {"role": "system", "content": "You are a helpful assistant."},
 ]
 
+def on_connect(client, userdata, flags, rc):
+    logging.info(f"Connected with result code {rc}")
+    client.subscribe("esp")
+
+def on_message(client, userdata, msg):
+    logging.info(f"Received message '{msg.payload.decode()}' on topic '{msg.topic}'")
+
+def on_disconnect(client, userdata, rc):
+    logging.info("Disconnected")
+
+def connect_mqtt():
+    client = mqtt.Client()
+    client.on_connect = on_connect
+    client.on_message = on_message
+    client.on_disconnect = on_disconnect
+    broker_address = "localhost"
+    client.connect(broker_address, 1883, 60)
+    return client
+
+try:
+    mqtt_client = connect_mqtt()
+    mqtt_client.loop_start()
+except Exception as e:
+    logging.error(f"Error connecting to MQTT broker: {str(e)}")
+    
 @app.get("/", response_class=HTMLResponse)
 async def login_register_page(request: Request):
     """Halaman login dan register."""
