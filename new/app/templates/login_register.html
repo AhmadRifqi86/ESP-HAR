@@ -6,30 +6,96 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Register/Login</title>
+    <style>
+        body {
+            /* Background gradient animation */
+            background: linear-gradient(45deg, #00EEFF, #000000);
+            background-size: 200% 200%;
+            animation: gradient-animation 6s ease infinite;
+        }
+
+        @keyframes gradient-animation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+    </style>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-    <div class="bg-white p-8 rounded-lg shadow-lg w-96">
-        <h2 id="form-title" class="text-2xl font-bold mb-6">Login</h2>
-        <form id="form" method="post" action="/login">
-            <div class="mb-4">
-                <label class="block text-gray-700">Username</label>
-                <input name="username" type="text" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+<body class="flex items-center justify-center h-screen bg-gray-900">
+    <div
+        class="glass p-8 rounded-lg shadow-lg w-96 transform transition-transform duration-500 hover:scale-105 hover:shadow-2xl">
+        <h2 id="form-title" class="text-3xl font-extrabold mb-6 text-gray-800 text-center">Login</h2>
+        <form id="form" method="post" action="/login" class="space-y-4">
+            <div class="relative">
+                <label class="block text-gray-700 font-medium">Username</label>
+                <input name="username" type="text"
+                    class="w-full p-3 border border-gray-300 rounded-lg shadow-inner mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300"
+                    placeholder="Enter your username" required>
+                <span class="absolute top-1 right-3 text-gray-400">
+                    <!-- Ikon user -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4s-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1h16v-1c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                </span>
             </div>
-            <div class="mb-4">
-                <label class="block text-gray-700">Password</label>
-                <input name="password" type="password" class="w-full p-2 border border-gray-300 rounded mt-2" required>
+            <div class="relative">
+                <label class="block text-gray-700 font-medium">Password</label>
+                <!-- Input Password -->
+                <span class="absolute top-1 right-3 text-gray-400">
+                    <!-- Ikon kunci -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 " viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 2a6 6 0 00-6 6v3H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-1V8a6 6 0 00-6-6zm0 2a4 4 0 014 4v3H8V8a4 4 0 014-4zm-1 7h2v6h-2v-6z" />
+                    </svg>
+                </span>
+                <div class="relative">
+                    <input id="password" name="password" type="password"
+                        class="w-full p-3 border border-gray-300 mt-2 rounded-lg shadow-inner focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 pr-10"
+                        placeholder="Enter your password" required>
+                    <!-- Ikon Mata di Dalam Kolom -->
+
+                    <span class="absolute inset-y-2 mt-3 right-3 flex items-center text-gray-400 cursor-pointer"
+                        onclick="togglePasswordVisibility()">
+                        <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24"
+                            fill="currentColor">
+                            <path
+                                d="M12 4.5c-4.97 0-9.16 3.16-10.79 7.5C2.84 15.34 7.03 18.5 12 18.5s9.16-3.16 10.79-7.5C21.16 7.66 16.97 4.5 12 4.5zm0 2c3.17 0 5.94 1.76 7.24 4.5-1.3 2.74-4.07 4.5-7.24 4.5-3.17 0-5.94-1.76-7.24-4.5C6.06 8.26 8.83 6.5 12 6.5zm0 1.5a3 3 0 110 6 3 3 0 010-6z" />
+                        </svg>
+                    </span>
+                </div>
             </div>
-            <button class="w-full bg-blue-500 text-white p-2 rounded mt-4">Submit</button>
+            <button
+                class="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-purple-600 hover:to-blue-500 text-white p-3 rounded-lg shadow-md font-bold text-lg transition-all duration-300 transform hover:scale-105">
+                Submit
+            </button>
         </form>
-        <div id="toggle-buttons" class="mt-4 text-center">
-            <button onclick="toggleForm('register')" class="text-blue-500">Register</button>
-            <span>|</span>
-            <button onclick="toggleForm('login')" class="text-blue-500">Login</button>
+        <div id="toggle-buttons" class="mt-6 text-center space-x-4">
+            <button onclick="toggleForm('register')"
+                class="text-blue-500 hover:text-purple-600 transition-all duration-300 font-medium">Register</button>
+            <span class="text-gray-400">|</span>
+            <button onclick="toggleForm('login')"
+                class="text-blue-500 hover:text-purple-600 transition-all duration-300 font-medium">Login</button>
         </div>
-        <p id="message" class="text-red-500 mt-4">{{ message }}</p>
-        <!-- SSO Login Button -->
-        <button onclick="AuthSso()" class="w-full bg-green-500 text-white p-2 rounded mt-4">Login with SSO</button>
+        <p id="message" class="text-red-500 mt-4 text-center"></p>
+        <button onclick="AuthSso()"
+            class="w-full bg-green-500 hover:bg-green-600 text-white p-3 rounded-lg shadow-md font-bold text-lg mt-4 transition-all duration-300 transform hover:scale-105">
+            Login with SSO
+        </button>
     </div>
 
     <script>
@@ -46,25 +112,17 @@
         }
 
         async function AuthSso() {
-            // Redirect to CAS logout page
             window.location.href = 'https://sso.ui.ac.id/cas2/logout';
-
-            // After logout, wait a moment (e.g., 1 second) before redirecting to login
             setTimeout(() => {
                 const redirectUrl = `https://sso.ui.ac.id/cas2/login?service=${encodeURIComponent(
                     window.location.origin + '/'
                 )}`;
                 window.location.href = redirectUrl;
-            }, 1000);  // Adjust the delay time as necessary
-
-            setTimeout(() => {
-                window.location.href = '/';
-            }, 2000);  // Adjust the delay time as necessary
+            }, 1000);
         }
-
-
-
     </script>
 </body>
+
+
 
 </html>
