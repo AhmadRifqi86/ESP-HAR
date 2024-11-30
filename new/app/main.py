@@ -119,8 +119,8 @@ async def dashboard(request: Request):
     iot_data = {
         "heart_rate": 75,
         "temperature": 36.6,
-        "oxygen_level": 98,
-        "bmi": 22.5,
+        "position": "Standing",
+        "location": "6.46° N, 100.50° E",
     }
 
     if prod:

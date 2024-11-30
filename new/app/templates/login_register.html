@@ -40,6 +40,13 @@
             height: 100%;
             /* Full height */
         }
+
+        /* Media query to hide the image in mobile mode */
+        @media (max-width: 768px) {
+            .mobile-hidden {
+                display: none;
+            }
+        }
     </style>
 </head>
 
@@ -49,7 +56,7 @@
         <!-- Gambar Profil -->
         <div class="flex-shrink-0 w-1/2 flex items-center justify-center">
             <img src="https://ik.imagekit.io/abdfikih/1961399015.jpg?updatedAt=1732875322079" alt="Login Image"
-                class="w-full h-auto rounded-lg shadow-lg">
+                class="w-full h-auto rounded-lg shadow-lg mobile-hidden">
         </div>
 
         <div class="separator hidden md:block w-1 px-4"></div>
