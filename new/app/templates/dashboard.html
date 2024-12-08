@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Dashboard</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
         body {
             /* Background gradient animation */
@@ -47,7 +49,7 @@
                     <span class="text-indigo-400 mr-2">💓</span>
                     Heart Rate
                 </h2>
-                <p class="text-gray-700 text-xl font-bold">{{ data.heart_rate }} bpm</p>
+                <p class="text-gray-700 text-xl font-bold" id="data_heart_rate">{{ data.heart_rate }} bpm</p>
             </div>
 
             <!-- Temperature Card -->
@@ -56,7 +58,7 @@
                     <span class="text-purple-400 mr-2">🌡️</span>
                     Temperature
                 </h2>
-                <p class="text-gray-700 text-xl font-bold">{{ data.temperature }} °C</p>
+                <p class="text-gray-700 text-xl font-bold" id="data_temperature">{{ data.temperature }} °C</p>
             </div>
 
             <!-- Position Card -->
@@ -65,7 +67,7 @@
                     <span class="text-green-400 mr-2">🚶</span>
                     Position
                 </h2>
-                <p class="text-gray-700 text-xl font-bold">{{ data.position }}</p>
+                <p class="text-gray-700 text-xl font-bold" id="data_position">{{ data.position }}</p>
             </div>
 
             <!-- Location Card -->
@@ -74,7 +76,7 @@
                     <span class="text-pink-400 mr-2">📍</span>
                     Location
                 </h2>
-                <p class="text-gray-700 text-xl font-bold">{{ data.location }}</p>
+                <p class="text-gray-700 text-xl font-bold" id="data_location">{{ data.location }}</p>
             </div>
         </div>
     </div>
@@ -82,9 +84,10 @@
     <!-- Map Section -->
     <section class="mt-12">
         <div class="relative w-full h-96">
-            <iframe class="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
+            <div id="map" class="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"></div>
+            <!-- <iframe class="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
                 src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12080.73732861526!2d-74.0059418!3d40.7127847!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM40zMDA2JzEwLjAiTiA3NMKwMjUnMzcuNyJX!5e0!3m2!1sen!2sus!4v1648482801994!5m2!1sen!2sus"
-                frameborder="0" style="border:0;" allowfullscreen=""></iframe>
+                frameborder="0" style="border:0;" allowfullscreen=""></iframe> -->
         </div>
     </section>
 
@@ -148,6 +151,17 @@
         </div>
     </div>
     <script>
+        const map = L.map('map').setView([-6.1751, 106.865], 13);
+
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            tileSize: 256,
+            maxZoom: 19,
+        }).addTo(map);
+
+
+        let marker = null;
+
         // Ambil elemen-elemen yang diperlukan
         const chatbotToggleBtn = document.getElementById('chatbot-toggle-btn');
         const chatbotContainer = document.getElementById('chatbot-container');
@@ -200,6 +214,49 @@
         chatbotToggleBtn.addEventListener('click', () => {
             chatbotContainer.classList.toggle('hidden');
         });
+
+        const websocket = new WebSocket("ws://0.0.0.0:8000/ws");
+        
+        websocket.onmessage = function(event) {
+            console.log("test");
+            console.log("WebSocket message received:", event.data);
+            const data = JSON.parse(event.data);
+            console.log(data);
+            if(data.coordinate){
+                document.getElementById("data_location").innerText = data.coordinate.lat + ", " + data.coordinate.long;
+                const lat = data.coordinate.lat;
+                const long = data.coordinate.long;
+
+                if (marker) {
+                    marker.setLatLng([lat, long]);
+                } else {
+                    marker = L.marker([lat, long]).addTo(map);
+                }
+
+                map.setView([lat, long], 13);
+            }
+
+            if(data.temperature){
+                document.getElementById("data_temperature").innerText = data.temperature + "°C";
+            }
+            
+            if(data.heart_rate){
+                document.getElementById("data_heart_rate").innerText = data.heart_rate + "bpm";
+            }
+
+            if(data.position){
+                document.getElementById("data_position").innerText = data.position;
+            }
+       
+        };
+
+        websocket.onerror = (error) => {
+            console.error("WebSocket error: ", error);
+        };
+
+        websocket.onclose = () => {
+            console.log("WebSocket connection closed");
+        };
     </script>
 
 

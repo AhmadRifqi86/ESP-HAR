@@ -1,6 +1,6 @@
 fastapi==0.115.5
 motor==3.6.0
-uvicorn
+uvicorn[standard]
 jinja2
 python-multipart
 openai==0.28
@@ -8,3 +8,4 @@ python-dotenv
 paho-mqtt
 bcrypt
 thread
+asyncio
