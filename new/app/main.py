@@ -31,6 +31,11 @@ load_dotenv()  # Memuat variabel lingkungan dari file .env
 openai.api_key = os.getenv("OPENAI_API_KEY")
 env = os.getenv("ENV")
 
+MQTT_URL = os.getenv("MQTT_URL")
+MQTT_PORT = os.getenv("MQTT_PORT")
+MQTT_USERNAME = os.getenv("MQTT_USERNAME")
+MQTT_PASSWORD = os.getenv("MQTT_PASSWORD")
+
 if env == "production":
     prod = True
 elif env == "staging":
@@ -59,8 +64,10 @@ messages = [
 
 def on_connect(client, userdata, flags, rc):
     logging.info(f"Connected with result code {rc}")
-    client.subscribe("temperature/roof")
-    client.subscribe("location")
+    client.subscribe("safeyou/wristband/heartRate")
+    client.subscribe("safeyou/wristband/temperature")
+    client.subscribe("safeyou/wristband/position")
+    client.subscribe("safeyou/wristband/location")
 
 async def send_message(websocket: WebSocket, message: str):
     try:
@@ -85,9 +92,12 @@ def connect_mqtt():
     mqtt_client.on_connect = on_connect
     mqtt_client.on_message = on_message
     mqtt_client.on_disconnect = on_disconnect
-    broker_url = "mqtt.eclipseprojects.io"
-    broker_port = 1883
+    broker_url = MQTT_URL
+    broker_port = int(MQTT_PORT)
+    broker_username = MQTT_USERNAME
+    broker_password = MQTT_PASSWORD
     try:
+        mqtt_client.username_pw_set(broker_username, broker_password)
         mqtt_client.connect(broker_url, broker_port, 60)
     except Exception as e:
         print(f"Could not connect to MQTT broker: {e}")
